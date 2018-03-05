@@ -1,0 +1,3 @@
+[submodule "caman"]
+	path = caman
+	url = git@github.com:enemy-space/caman.git
