@@ -1,6 +1,6 @@
 ## Enemy Space docker development environments
 
-When started `docker-compose` looks for 'localunixsocket.<domain>' where `domain` can be 'local' or whatever you're network assigns to your machine.
+When started `docker-compose` looks for `localunixsocket.<domain>` where `domain` can be `local` or whatever you're network assigns to your machine.
 
 Update your `/etc/hosts` file:
 
