@@ -2,23 +2,40 @@ version: '3'
 
 services:
   haproxy:
+    container_name: "haproxy"
     build: ./haproxy
     networks:
       - internal
     ports:
       - "80:80"
       - "443:443"
+    volumes:
+      - "${DOCKER_DIR}/entertainment/log/haproxy:/dev/log"
 
   portainer:
+    container_name: "portainer"
     image: "portainer/portainer"
     volumes:
-      - portainer_data:/data
-      - /var/run/docker.sock:/var/run/docker.sock
+      - "${DOCKER_DIR}/entertainment/data/portainer:/data"
+      - "/var/run/docker.sock:/var/run/docker.sock"
     networks:
       - internal
 
-volumes:
-  portainer_data:
+  mysql:
+    container_name: "mysql"
+    image: "mysql"
+    ports:
+      - "3306:3306"
+    networks:
+      - internal
+    environment:
+      - MYSQL_LOG_CONSOLE=1
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+    volumes:
+      - "${DOCKER_DIR}/entertainment/data/mysql:/var/lib/mysql"
+      - "./mysql.d:/etc/mysql/conf.d"
+
 
 networks:
   internal:
