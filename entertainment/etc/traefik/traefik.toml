@@ -1,0 +1,39 @@
+# Global configuration
+# debug = true
+# logLevel = "DEBUG"
+defaultEntryPoints = ["http"]
+
+# Entrypoints configuration
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+  [entryPoints.https]
+  address = ":443"
+  [entryPoints.https.tls]
+
+[traefikLog]
+format = "json"
+
+# Access logs configuration
+# [accessLog]
+# format = "json"
+
+# API and dashboard configuration
+[api]
+dashboard = true
+
+# Ping configuration
+[ping]
+
+# localhosts configuration
+[file]
+filename = "localhosts.toml"
+watch = true
+
+# Docker configuration backend
+[docker]
+domain = "ent.run"
+watch = true
+exposedByDefault = true
+
+# Frontends configuration

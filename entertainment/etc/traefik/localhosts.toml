@@ -1,0 +1,50 @@
+[backends]
+  [backends.sg2]
+    url = "docker.for.mac.host.internal:8080"
+
+  [backends.sg3]
+    url = "docker.for.mac.host.internal:8030"
+
+  [backends.sg4]
+    url = "docker.for.mac.host.internal:8040"
+
+  [backends.sg-api]
+    url = "docker.for.mac.host.internal:8010"
+
+  [backends.burn]
+    url = "docker.for.mac.host.internal:7999"
+
+  [backends.les]
+    url = "docker.for.mac.host.internal:3210"
+
+[frontends]
+  [frontends.sg2]
+  backend="sg2"
+    [frontends.sg2.routes.test_1]
+    rule = "Host:sg2.ent.run"
+
+  [frontends.sg3]
+  backend="sg3"
+    [frontends.sg3.routes.test_1]
+    rule = "Host:sg3.ent.run"
+
+  [frontends.sg4]
+  backend="sg4"
+    [frontends.sg4.routes.test_1]
+    rule = "Host:sg4.ent.run"
+
+  [frontends.sg-api]
+  backend="sg-api"
+    [frontends.sg-api.routes.test_1]
+    rule = "Host:sg-api.ent.run"
+
+  [frontends.burn]
+  backend="burn"
+    [frontends.burn.routes.test_1]
+    rule = "Host:burn.ent.run"
+
+  [frontends.les]
+  backend="les"
+    [frontends.les.routes.test_1]
+    rule = "Host:local.enemy.space"
+

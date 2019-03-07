@@ -1,41 +1,76 @@
 version: '3'
 
 services:
-  haproxy:
-    container_name: "haproxy"
-    build: ./haproxy
-    networks:
-      - internal
+  traefik:
+    container_name: "traefik"
+    image: traefik
+    labels:
+      - "traefik.port=8080"
+      - "traefik.frontend.rule=Host:traefik.ent.run"
+    command: --configFile=/etc/traefik/traefik.toml --logLevel="DEBUG"
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - "${DOCKER_DIR}/entertainment/log/haproxy:/dev/log"
+      - "${DOCKER_DIR}/entertainment/etc/traefik:/etc/traefik"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+  verdaccio:
+    container_name: "verdaccio"
+    image: "verdaccio/verdaccio"
+    labels:
+      - "traefik.port=4873"
+      - "traefik.frontend.rule=Host:npm.ent.run"
+    volumes:
+      - "${DOCKER_DIR}/entertainment/etc/verdaccio:/verdaccio/conf"
+      - "${DOCKER_DIR}/entertainment/etc/verdaccio/plugins:/verdaccio/plugins"
+      - "${DOCKER_DIR}/entertainment/mnt/verdaccio:/verdaccio/storage"
 
   portainer:
     container_name: "portainer"
     image: "portainer/portainer"
+    labels:
+      - "traefik.port=9000"
+      - "traefik.frontend.rule=Host:portainer.ent.run"
     volumes:
-      - "${DOCKER_DIR}/entertainment/data/portainer:/data"
+      - "${DOCKER_DIR}/entertainment/etc/portainer:/data"
       - "/var/run/docker.sock:/var/run/docker.sock"
-    networks:
-      - internal
+    depends_on:
+      - traefik
 
   mysql:
     container_name: "mysql"
     image: "mysql"
+    labels:
+      - "traefik.enable=false"
     ports:
       - "3306:3306"
-    networks:
-      - internal
     environment:
       - MYSQL_LOG_CONSOLE=1
       - MYSQL_ROOT_HOST=%
       - MYSQL_ALLOW_EMPTY_PASSWORD=1
     volumes:
-      - "${DOCKER_DIR}/entertainment/data/mysql:/var/lib/mysql"
-      - "./mysql.d:/etc/mysql/conf.d"
+      - "${DOCKER_DIR}/entertainment/mnt/mysql:/var/lib/mysql"
+      - "${DOCKER_DIR}/entertainment/etc/mysql/conf.d:/etc/mysql/conf.d"
+    depends_on:
+      - traefik
 
+  swagger:
+    container_name: "swagger"
+    image: "swaggerapi/swagger-editor"
+    labels:
+      - "traefik.port=8080"
+      - "traefik.frontend.rule=Host:swagger.ent.run"
+    depends_on:
+      - traefik
 
-networks:
-  internal:
+ # haproxy:
+ #    container_name: "haproxy"
+ #    build: ./docker_builds/haproxy
+ #    networks:
+ #      - internal
+ #    ports:
+ #      - "80:80"
+ #      - "443:443"
+ #    volumes:
+ #      - "${DOCKER_DIR}/entertainment/log/haproxy:/dev/log"

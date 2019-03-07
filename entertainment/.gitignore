@@ -1,0 +1,7 @@
+/mnt/*
+!/mnt/.gitkeep
+
+/log/*
+!/log/gitkeep
+
+/haproxy/ssl
